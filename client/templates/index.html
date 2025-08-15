@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog website</title>
+</head>
+<body>
+    <div
+      id="main-div"
+      hx-get="/blogger"
+      hx-target="#main-div"
+      hx-swap="outerHTML"
+      hx-trigger="load"
+      hx-push-url="true"
+    ></div>
+</body>
+</html>
