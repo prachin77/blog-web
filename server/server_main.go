@@ -5,9 +5,10 @@ import (
 	"log"
 	"net"
 
+	"github.com/prachin77/blog-web/db"
 	"github.com/prachin77/blog-web/pb"
-	"github.com/prachin77/blog-web/server/server_handlers"
 	"github.com/prachin77/blog-web/utils"
+	"github.com/prachin77/blog-web/server/server_handlers"
 	"google.golang.org/grpc"
 )
 
@@ -16,6 +17,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
+
+	// initialize firesbase dbs
+	if err := db.Init(); err != nil {
+		log.Fatalf("❌ Failed to initialize databases: %v", err)
+	}
+
+	defer func() {
+		log.Println("🔒 Closing database connections...")
+		db.Close()
+	}()
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", config.ServerPort))
 	if err != nil {

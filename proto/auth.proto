@@ -12,6 +12,9 @@ message RegisterRequest {
     string username = 1;
     string email = 2;
     string password = 3;
+    string created_at = 4;
+    int32 no_of_blogs = 5;
+    int32 followers = 6;
 }
 
 message RegisterResponse {

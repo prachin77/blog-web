@@ -3,9 +3,75 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"time"
 
+	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 )
+
+func RequestLogger() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Start timer
+		start := time.Now()
+
+		// Process request
+		c.Next()
+
+		// Collect log data
+		status := c.Writer.Status()
+		method := c.Request.Method
+		path := c.Request.URL.Path
+		latency := time.Since(start)
+		clientIP := c.ClientIP()
+
+		// Skip logging for certain paths
+		if path == "/health" || path == "/favicon.ico" {
+			return
+		}
+
+		// Create colored boxes based on request type
+		var methodBox, statusBox string
+
+		switch method {
+		case "GET":
+			methodBox = color.New(color.BgBlue, color.FgWhite).Sprintf(" GET ")
+		case "POST":
+			methodBox = color.New(color.BgGreen, color.FgWhite).Sprintf(" POST ")
+		case "PUT", "PATCH":
+			methodBox = color.New(color.BgYellow, color.FgBlack).Sprintf(" %s ", method)
+		case "DELETE":
+			methodBox = color.New(color.BgRed, color.FgWhite).Sprintf(" DELETE ")
+		default:
+			methodBox = color.New(color.BgWhite, color.FgBlack).Sprintf(" %s ", method)
+		}
+
+		// Status code coloring
+		switch {
+		case status >= 200 && status < 300:
+			statusBox = color.New(color.BgGreen, color.FgWhite).Sprintf(" %d ", status)
+		case status >= 300 && status < 400:
+			statusBox = color.New(color.BgBlue, color.FgWhite).Sprintf(" %d ", status)
+		case status >= 400 && status < 500:
+			statusBox = color.New(color.BgYellow, color.FgBlack).Sprintf(" %d ", status)
+		case status >= 500:
+			statusBox = color.New(color.BgRed, color.FgWhite).Sprintf(" %d ", status)
+		default:
+			statusBox = color.New(color.BgWhite, color.FgBlack).Sprintf(" %d ", status)
+		}
+
+		// Format the log message with boxes
+		logMessage := fmt.Sprintf("%s %s %s %s - %v",
+			color.New(color.FgHiWhite).Sprintf("%-15s", clientIP),
+			methodBox,
+			statusBox,
+			color.New(color.FgHiCyan).Sprintf("%-30s", path),
+			color.New(color.FgHiMagenta).Sprintf("%v", latency),
+		)
+
+		// Print the log
+		fmt.Println(logMessage)
+	}
+}
 
 // CORSMiddleware handles Cross-Origin Resource Sharing
 func CORSMiddleware() gin.HandlerFunc {
@@ -13,12 +79,12 @@ func CORSMiddleware() gin.HandlerFunc {
 		// Allow specific origins or use "*" for all origins (less secure)
 		// For development, you might want to allow all origins
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		
+
 		// For production, specify your exact origins:
 		// origin := c.Request.Header.Get("Origin")
 		// allowedOrigins := []string{
 		//     "http://localhost:3000",
-		//     "http://localhost:8080", 
+		//     "http://localhost:8080",
 		//     "https://yourdomain.com",
 		// }
 		// if isAllowedOrigin(origin, allowedOrigins) {
