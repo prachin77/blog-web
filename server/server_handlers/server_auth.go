@@ -16,8 +16,7 @@ type AuthServer struct {
 }
 
 func (s *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-    // Check if email already exists
-    emailExists, err := db.CheckEmailExists(req.Email)
+    emailExists,user_id ,err := db.CheckEmailExists(req.Email)
     if err != nil {
         return nil, status.Errorf(codes.Internal, "Error checking email existence: %v", err)
     }
@@ -25,11 +24,10 @@ func (s *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb
     if emailExists {
         return &pb.RegisterResponse{
             Message: "User with this email already exists",
-            UserId:  "", // Empty string for existing user
+            UserId:  user_id, 
         }, nil
     }
 
-    // Parse the created_at time
     createdAt, err := time.Parse(time.RFC3339, req.CreatedAt)
     if err != nil {
         return nil, status.Errorf(codes.InvalidArgument, "Invalid created_at format: %v", err)
@@ -45,7 +43,6 @@ func (s *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb
         Followers: int(req.Followers),
     }
 
-    // Save user to database and get Firebase-generated ID
     userID, err := db.CreateUser(user)
     if err != nil {
         return nil, status.Errorf(codes.Internal, "Failed to create user: %v", err)
@@ -53,6 +50,34 @@ func (s *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb
 
     return &pb.RegisterResponse{
         Message: "User registered successfully",
-        UserId:  userID, // Return the actual Firebase document ID
+        UserId:  userID, 
+    }, nil
+}
+
+func (s *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+    // check through email
+    // if email exists then user can log in 
+
+    emailExists, userID, err := db.CheckEmailExists(req.Email) 
+    if err != nil {
+        return nil, status.Errorf(codes.Internal, "Error checking email existence: %v", err)
+    }
+
+    if !emailExists {
+        return nil, status.Errorf(codes.NotFound, "User with this email does not exist")
+    }
+
+    passwordMatch, err := db.VerifyPassword(userID, req.Password)
+    if err != nil {
+        return nil, status.Errorf(codes.Internal, "Error verifying password: %v", err)
+    }
+
+    if !passwordMatch {
+        return nil, status.Errorf(codes.Unauthenticated, "Invalid password")
+    }
+    
+    return &pb.LoginResponse{
+        Message: "User successfully logged in",
+        UserId:  userID, 
     }, nil
 }

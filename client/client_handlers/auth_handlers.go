@@ -17,7 +17,7 @@ var (
 
 const CONTEXT_TIMEOUT = 5 * time.Second
 
-type RegisterResponse struct {
+type AuthResponse struct {
     Message string `json:"message"`
     UserId  string `json:"user_id"`
 }
@@ -39,6 +39,7 @@ func IsAuthClientInitialized() bool {
 }
 
 func Register(ctx *gin.Context) {
+    ctx.Header("Content-Type", "text/html")
     // Check if client is initialized
     if auth_service_client == nil {
         println("❌ Register called but auth_service_client is nil")
@@ -50,7 +51,6 @@ func Register(ctx *gin.Context) {
     }
 
     println("✅ Register called with initialized client")
-    ctx.Header("Content-Type", "application/json")
 
     var user model.User
     err := json.NewDecoder(ctx.Request.Body).Decode(&user)
@@ -94,7 +94,65 @@ func Register(ctx *gin.Context) {
 
     println("✅ User registration successful, Firebase ID:", res.UserId)
 
-    ctx.JSON(http.StatusOK, RegisterResponse{
+    ctx.JSON(http.StatusOK, AuthResponse{
+        Message: res.Message,
+        UserId:  res.UserId,
+    })
+}
+
+func Login(ctx *gin.Context) {
+    ctx.Header("Content-Type", "text/html")
+
+    if auth_service_client == nil {
+        println("❌ Login called but auth_service_client is nil")
+        ctx.JSON(http.StatusInternalServerError, gin.H{
+            "error": "Auth service client not initialized",
+            "hint": "Make sure the gRPC server is running and client is properly initialized",
+        })
+        return
+    }
+
+    println("✅ Register called with initialized client")
+
+    var user model.User
+    err := json.NewDecoder(ctx.Request.Body).Decode(&user)
+    if err != nil {
+        println("❌ JSON decode error:", err.Error())
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+        return
+    }
+    
+    println("📝 Login request for:", user.Email)
+
+    if user.Password == "" || user.Email == "" {
+        println("❌ Validation failed - empty fields")
+        ctx.JSON(http.StatusBadRequest, gin.H{"error": "Password or email is empty"})
+        return
+    }   
+
+    req := &pb.LoginRequest{
+        Password:  user.Password,
+        Email:     user.Email,
+    }
+
+    println("🔄 Calling gRPC Login service...")
+
+    ctxTimeout, cancelFunc := context.WithTimeout(context.Background(), CONTEXT_TIMEOUT)
+    defer cancelFunc()
+
+    res, err := auth_service_client.Login(ctxTimeout, req)
+    if err != nil {
+        println("❌ gRPC call failed:", err.Error())
+        ctx.JSON(http.StatusInternalServerError, gin.H{
+            "error": "Failed to login user", 
+            "details": err.Error(),
+        })
+        return
+    }
+
+    println("✅ User registration successful, Firebase ID:", res.UserId)
+
+    ctx.JSON(http.StatusOK, AuthResponse{
         Message: res.Message,
         UserId:  res.UserId,
     })

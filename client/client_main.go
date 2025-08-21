@@ -52,7 +52,7 @@ func main() {
 
 	// Auth form submission routes (HTMX targets)
 	r.POST("/auth/register", client_handlers.Register)
-	// r.POST("/auth/login", client_handlers.PostLogin)
+	r.POST("/auth/login", client_handlers.Login)
 
 	// 🔥 ADD DEBUG ROUTE (optional)
 	r.GET("/debug/client", func(c *gin.Context) {

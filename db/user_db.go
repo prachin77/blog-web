@@ -11,38 +11,37 @@ import (
 )
 
 // CheckEmailExists checks if a user with the given email already exists
-func CheckEmailExists(email string) (bool, error) {
+func CheckEmailExists(email string) (bool, string, error) {
     if FirestoreClient == nil {
-        return false, fmt.Errorf("firestore client not initialized")
+        return false, "", fmt.Errorf("firestore client not initialized")
     }
 
     ctx := context.Background()
 
     // Query users collection for the email
     iter := FirestoreClient.Collection(UsersCollection).
-        Where("email", "==", email).
+        Where("Email", "==", email).
         Limit(1).
         Documents(ctx)
 
     defer iter.Stop()
 
     // Check if any document exists
-    _, err := iter.Next()
+    doc, err := iter.Next()
     if err != nil {
         // Check if it's a "not found" error (which means email doesn't exist)
         if err == iterator.Done {
             // No document found - email doesn't exist
-            return false, nil
+            return false, "", nil
         }
         // Some other error occurred
-        return false, fmt.Errorf("error checking email existence: %v", err)
+        return false, "", fmt.Errorf("error checking email existence: %v", err)
     }
 
-    // Document found - email exists
-    return true, nil
+    // Document found - email exists, return the document ID
+    return true, doc.Ref.ID, nil
 }
 
-// CreateUser creates a new user in the Firestore database and returns the Firebase-generated ID
 func CreateUser(user *model.User) (string, error) {
     if FirestoreClient == nil {
         return "", fmt.Errorf("firestore client not initialized")
@@ -64,7 +63,6 @@ func CreateUser(user *model.User) (string, error) {
     return docRef.ID, nil
 }
 
-// GetUserByEmail retrieves a user by email along with their ID
 func GetUserByEmail(email string) (*model.User, string, error) {
     if FirestoreClient == nil {
         return nil, "", fmt.Errorf("firestore client not initialized")
@@ -96,7 +94,6 @@ func GetUserByEmail(email string) (*model.User, string, error) {
     return &user, doc.Ref.ID, nil
 }
 
-// GetUserByID retrieves a user by their Firebase document ID
 func GetUserByID(userID string) (*model.User, error) {
     if FirestoreClient == nil {
         return nil, fmt.Errorf("firestore client not initialized")
@@ -119,4 +116,31 @@ func GetUserByID(userID string) (*model.User, error) {
     }
 
     return &user, nil
+}
+
+func VerifyPassword(userID, password string) (bool, error) {
+    if FirestoreClient == nil {
+        return false, fmt.Errorf("firestore client not initialized")
+    }
+
+    ctx := context.Background()
+
+    // Get user document by ID
+    doc, err := FirestoreClient.Collection(UsersCollection).Doc(userID).Get(ctx)
+    if err != nil {
+        if status.Code(err) == codes.NotFound {
+            return false, fmt.Errorf("user not found")
+        }
+        return false, fmt.Errorf("error getting user: %v", err)
+    }
+
+    // parsing data into model format
+    var user model.User
+    err = doc.DataTo(&user)
+    if err != nil {
+        return false, fmt.Errorf("error parsing user data: %v", err)
+    }
+
+    // note: In production, you should use bcrypt to hash passwords and compare hashes
+    return user.Password == password, nil
 }
