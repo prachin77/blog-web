@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -146,4 +147,28 @@ func validatePassword(password string) error {
 	}
 
 	return nil
+}
+
+func IsValidImageType(contentType string) bool {
+	validTypes := []string{
+		"image/jpeg",
+		"image/jpg",
+		"image/png",
+		"image/webp",
+		"image/gif",
+	}
+
+	for _, validType := range validTypes {
+		if strings.HasPrefix(contentType, validType) {
+			return true
+		}
+	}
+	return false
+}	
+
+func ConvertImageToBase64(imageBytes []byte) string {
+	if len(imageBytes) == 0 {
+		return ""
+	}
+	return base64.StdEncoding.EncodeToString(imageBytes)
 }

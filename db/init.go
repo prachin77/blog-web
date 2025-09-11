@@ -3,69 +3,62 @@ package db
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
 
 	"cloud.google.com/go/firestore"
-	firebase "firebase.google.com/go"
-	"firebase.google.com/go/auth"
-	"github.com/prachin77/blog-web/utils"
 	"google.golang.org/api/option"
 )
 
 var (
 	FirestoreClient *firestore.Client
-	AuthClient      *auth.Client
-	ctx             = context.Background()
 )
 
 const (
-	UsersCollection = "users"
 	BlogsCollection = "blogs"
+	UsersCollection = "users"
 )
 
+// ✅ Init initializes only Firestore client (Storage removed)
 func Init() error {
-	fmt.Println("🔥 Initializing Firebase services...")
-
-	projectID, err := utils.GetFirebaseProjectID("P:/blog-web/db/Firebase_Credentials.json")
-	if err != nil {
-		return fmt.Errorf("failed to get Firebase project ID: %v", err)
-	}
-
-	opt := option.WithCredentialsFile("P:/blog-web/db/Firebase_Credentials.json")
-	config := &firebase.Config{ProjectID: projectID}
-
-	app, err := firebase.NewApp(ctx, config, opt)
-	if err != nil {
-		return fmt.Errorf("error initializing Firebase app: %v", err)
+	// Load service account key from env variable
+	credentialsPath := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+	if credentialsPath == "" {
+		// Fallback to hardcoded path if env var not set
+		credentialsPath = "P:/blog-web/db/Firebase_Credentials.json"
 	}
 
 	// Initialize Firestore
-	FirestoreClient, err = app.Firestore(ctx)
-	if err != nil {
-		return fmt.Errorf("error getting Firestore client: %v", err)
+	if err := InitFirestore(credentialsPath); err != nil {
+		return fmt.Errorf("❌ Firestore initialization failed: %v", err)
 	}
-	fmt.Println("✅ Firestore initialized successfully")
 
-	// Initialize Auth
-	AuthClient, err = app.Auth(ctx)
-	if err != nil {
-		return fmt.Errorf("error getting Auth client: %v", err)
-	}
-	fmt.Println("✅ Auth client initialized successfully")
-
+	log.Println("✅ Firestore initialized successfully")
 	return nil
 }
 
-func GetFirestore() *firestore.Client {
-	return FirestoreClient
+// ✅ InitFirestore creates the Firestore client
+func InitFirestore(credentialsPath string) error {
+	ctx := context.Background()
+
+	client, err := firestore.NewClient(ctx, "blog-web-d79ed", option.WithCredentialsFile(credentialsPath))
+	if err != nil {
+		return fmt.Errorf("failed to create Firestore client: %w", err)
+	}
+
+	FirestoreClient = client
+	log.Println("✅ Firestore client initialized")
+	return nil
 }
 
-func GetAuth() *auth.Client {
-	return AuthClient
-}
-
+// ✅ Close cleans up Firestore client
 func Close() {
 	if FirestoreClient != nil {
-		FirestoreClient.Close()
-		fmt.Println("🔒 Firestore connection closed")
+		err := FirestoreClient.Close()
+		if err != nil {
+			log.Printf("⚠️ Error closing Firestore: %v", err)
+		} else {
+			log.Println("✅ Firestore client closed")
+		}
 	}
 }

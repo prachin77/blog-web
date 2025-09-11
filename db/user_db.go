@@ -18,7 +18,7 @@ func CheckEmailExists(email string) (bool, string, error) {
 
     ctx := context.Background()
 
-    // Query users collection for the email
+    // Query ss collection for the email
     iter := FirestoreClient.Collection(UsersCollection).
         Where("Email", "==", email).
         Limit(1).

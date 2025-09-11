@@ -18,11 +18,10 @@ func main() {
 		log.Fatalf("Failed to load config: %v", err)
 	}
 
-	// initialize firesbase dbs
-	if err := db.Init(); err != nil {
-		log.Fatalf("❌ Failed to initialize databases: %v", err)
-	}
+	// ✅ Initialize Firebase DBs
+	db.Init()
 
+	// ✅ Graceful cleanup on shutdown
 	defer func() {
 		log.Println("🔒 Closing database connections...")
 		db.Close()
@@ -35,8 +34,9 @@ func main() {
 
 	s := grpc.NewServer()
 	pb.RegisterAuthServiceServer(s, &server_handlers.AuthServer{})
+	pb.RegisterBlogServiceServer(s, &server_handlers.BlogServer{})
 
-	log.Printf("Server listening on port %d", config.ServerPort)
+	log.Printf("✅ Server listening on port %d", config.ServerPort)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

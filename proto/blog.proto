@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "P:/blog-web/pb"; 
+
+service BlogService {
+    rpc CreateBlog(CreateBlogRequest) returns (BlogResponse);
+}
+
+message CreateBlogRequest {
+    string title = 1;
+    string blog_content = 2;
+    string author_id = 3;
+    string created_at = 4;
+    string blog_image = 5;      
+    string tag = 6;
+    int32 likes = 7;
+    int32 comments = 8;
+}
+
+message BlogResponse {
+    string message = 1;
+    string blog_id = 2;
+    string author_id = 3;
+    string author_name = 4;
+}

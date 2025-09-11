@@ -32,8 +32,12 @@ func main() {
 	fmt.Println("AuthServiceClient created : ", auth_service_client)
 	fmt.Printf("Connected to gRPC server on port %d", config.ServerPort)
 
+	blog_service_client := pb.NewBlogServiceClient(conn)
+	fmt.Println("BlogServiceClient created : ", blog_service_client)
+
 	// 🔥 ADD THIS LINE - Initialize the client in handlers
 	client_handlers.InitializeAuthClient(auth_service_client)
+	client_handlers.InitializeBlogClient(blog_service_client)
 
 	// Create Gin server
 	gin.SetMode(gin.ReleaseMode)
@@ -53,6 +57,7 @@ func main() {
 	// Auth form submission routes (HTMX targets)
 	r.POST("/auth/register", client_handlers.Register)
 	r.POST("/auth/login", client_handlers.Login)
+	r.POST("/create-blog",client_handlers.CreateBlog)
 
 	// 🔥 ADD DEBUG ROUTE (optional)
 	r.GET("/debug/client", func(c *gin.Context) {
