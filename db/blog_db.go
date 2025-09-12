@@ -64,3 +64,31 @@ func IncrementUserBlogCount(userID string) error {
 
 	return nil
 }
+
+func GetBlogByID(blogID string) (*model.Blog, error) {
+	ctx := context.Background()
+	doc, err := FirestoreClient.Collection(BlogsCollection).Doc(blogID).Get(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("blog not found: %w", err)
+	}
+
+	var blog model.Blog
+	if err := doc.DataTo(&blog); err != nil {
+		return nil, fmt.Errorf("error parsing blog data: %w", err)
+	}
+
+	return &blog, nil
+}
+
+func DeleteBlog(blogID string) error {
+	ctx := context.Background()
+
+	_, err := FirestoreClient.Collection(BlogsCollection).Doc(blogID).Delete(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to delete blog: %w", err)
+	}
+
+	log.Printf("🗑️ Blog deleted: %s", blogID)
+	return nil
+}
+

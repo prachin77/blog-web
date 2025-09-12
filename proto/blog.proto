@@ -5,6 +5,7 @@ option go_package = "P:/blog-web/pb";
 
 service BlogService {
     rpc CreateBlog(CreateBlogRequest) returns (BlogResponse);
+    rpc DeleteBlog(DeleteBlogRequest) returns (BlogResponse);
 }
 
 message CreateBlogRequest {
@@ -23,4 +24,9 @@ message BlogResponse {
     string blog_id = 2;
     string author_id = 3;
     string author_name = 4;
+}
+
+message DeleteBlogRequest {
+    string blog_id = 1;
+    string author_id = 2; // Add author_id for validation
 }
