@@ -15,6 +15,7 @@ import (
 
 var blog_service_client pb.BlogServiceClient
 
+
 func InitializeBlogClient(client pb.BlogServiceClient) {
 	blog_service_client = client
 	if client != nil {
@@ -41,8 +42,13 @@ func CreateBlog(c *gin.Context) {
 	content := c.PostForm("blog_content")
 	authorID := c.PostForm("author_id")
 	tag := c.PostForm("tag")
-
-	// Validate required fields
+    tag, err := utils.ValidateAndNormalizeTag(tag)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 	if title == "" || content == "" || authorID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Title, content, and author ID are required",
@@ -50,7 +56,7 @@ func CreateBlog(c *gin.Context) {
 		return
 	}
 
-	// Handle file upload (optional)
+	// Handle file upload 
 	var base64Image string
 	file, header, err := c.Request.FormFile("blog_image")
 	if err == nil {
@@ -82,19 +88,18 @@ func CreateBlog(c *gin.Context) {
 			return
 		}
 
-		// Convert image bytes to base64 using utility function
 		base64Image = utils.ConvertImageToBase64(imageBytes)
 	}
 
 	// Parse optional numeric fields with default values
 	likes, err := strconv.Atoi(c.PostForm("likes"))
 	if err != nil {
-		likes = 0 // Default value
+		likes = 0 
 	}
 
 	comments, err := strconv.Atoi(c.PostForm("comments"))
 	if err != nil {
-		comments = 0 // Default value
+		comments = 0 
 	}
 
 	request := &pb.CreateBlogRequest{

@@ -17,6 +17,10 @@ type FirebaseCredentials struct {
 	ProjectID string `json:"project_id"`
 }
 
+var ValidTags = []string{
+	"tech", "lifestyle", "travel", "food", "education", "health", "finance", "entertainment",
+}
+
 type AppConfig struct {
 	ServerPort int
 	ClientPort int
@@ -172,3 +176,15 @@ func ConvertImageToBase64(imageBytes []byte) string {
 	}
 	return base64.StdEncoding.EncodeToString(imageBytes)
 }
+
+func ValidateAndNormalizeTag(input string) (string, error) {
+	normalized := strings.ToLower(strings.TrimSpace(input))
+	for _, tag := range ValidTags {
+		if normalized == tag {
+			return normalized, nil
+		}
+	}
+	return "", errors.New("invalid tag: must be one of " + strings.Join(ValidTags, ", "))
+}
+
+

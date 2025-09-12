@@ -53,7 +53,7 @@ func IncrementUserBlogCount(userID string) error {
 	userRef := FirestoreClient.Collection("users").Doc(userID)
 	_, err := userRef.Update(ctx, []firestore.Update{
 		{
-			Path:  "no_of_blogs",
+			Path:  "NoOfBlogs",
 			Value: firestore.Increment(1),
 		},
 	})
