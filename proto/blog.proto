@@ -6,6 +6,7 @@ option go_package = "P:/blog-web/pb";
 service BlogService {
     rpc CreateBlog(CreateBlogRequest) returns (BlogResponse);
     rpc DeleteBlog(DeleteBlogRequest) returns (BlogResponse);
+    rpc GetAllBlogs(GetAllBlogsRequest) returns (GetAllBlogsResponse);
 }
 
 message CreateBlogRequest {
@@ -29,4 +30,22 @@ message BlogResponse {
 message DeleteBlogRequest {
     string blog_id = 1;
     string author_id = 2; // Add author_id for validation
+}
+
+message GetAllBlogsRequest {}
+
+message SingleBlog {
+    string blog_id = 1;
+    string author_id = 2;
+    string author_name = 3;
+    string title = 4;
+    string blog_image = 5;
+    string tag = 6;
+    string created_at = 7;
+    int32 likes = 8;
+    int32 comments = 9;
+}
+
+message GetAllBlogsResponse {
+    repeated SingleBlog blogs = 1;
 }

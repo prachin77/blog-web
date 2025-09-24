@@ -59,6 +59,7 @@ func main() {
 	r.POST("/auth/login", client_handlers.Login)
 	r.POST("/create-blog",client_handlers.CreateBlog)
 	r.DELETE("/delete-blog/:blog_id",client_handlers.DeleteBlog)
+	r.GET("/all-blogs",client_handlers.GetAllBlogs)
 
 	// 🔥 ADD DEBUG ROUTE (optional)
 	r.GET("/debug/client", func(c *gin.Context) {
