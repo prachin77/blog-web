@@ -4,7 +4,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"regexp"
 	"strconv"
@@ -168,7 +170,7 @@ func IsValidImageType(contentType string) bool {
 		}
 	}
 	return false
-}	
+}
 
 func ConvertImageToBase64(imageBytes []byte) string {
 	if len(imageBytes) == 0 {
@@ -187,4 +189,13 @@ func ValidateAndNormalizeTag(input string) (string, error) {
 	return "", errors.New("invalid tag: must be one of " + strings.Join(ValidTags, ", "))
 }
 
-
+func GetSessionTokenFromCookie(req *http.Request) (string, error) {
+	cookie, err := req.Cookie("sessionToken")
+	if err == http.ErrNoCookie {
+		return "", nil // No cookie found, return empty string
+	} else if err != nil {
+		fmt.Println("Error : ", err)
+		return "", err // Some other error occurred
+	}
+	return cookie.Value, nil
+}

@@ -3,7 +3,9 @@ package db
 import (
 	"context"
 	"fmt"
+	"log"
 
+	"cloud.google.com/go/firestore"
 	"github.com/prachin77/blog-web/model"
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
@@ -176,4 +178,24 @@ func GetAllBlogs() ([]*model.Blog, error) {
 	}
 
 	return blogs, nil
+}
+
+func DecrementUserBlogCount(userID string) error {
+	ctx := context.Background()
+
+	// Get user reference from Firestore
+	userRef := FirestoreClient.Collection("users").Doc(userID)
+	_, err := userRef.Update(ctx, []firestore.Update{
+		{
+			Path:  "NoOfBlogs",
+			Value: firestore.Increment(-1), 
+		},
+	})
+
+	if err != nil {
+		return fmt.Errorf("failed to decrement blog count: %w", err)
+	}
+
+	log.Printf("✅ Decremented blog count for user %s", userID)
+	return nil
 }

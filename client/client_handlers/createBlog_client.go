@@ -91,7 +91,7 @@ func CreateBlog(c *gin.Context) {
 		base64Image = utils.ConvertImageToBase64(imageBytes)
 	}
 
-	// Parse optional numeric fields with default values
+	// set comments and likes to 0 here only , not using postman 
 	likes, err := strconv.Atoi(c.PostForm("likes"))
 	if err != nil {
 		likes = 0 
