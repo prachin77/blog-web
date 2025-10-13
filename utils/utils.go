@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -36,22 +37,34 @@ type RegisterRequest struct {
 }
 
 func LoadConfig() (*AppConfig, error) {
-	if err := godotenv.Load("P:/blog-web/.env"); err != nil {
-		return nil, errors.New("error loading .env file")
+	// Get current working directory
+	currentDir, err := os.Getwd()
+	if err != nil {
+		return nil, fmt.Errorf("error getting current directory: %v", err)
+	}
+	fmt.Println("Current working directory:", currentDir)
+
+	// Navigate to the root directory (i.e., go up two levels)
+	// rootDir := filepath.Dir(filepath.Dir(currentDir))
+	rootDir := filepath.Dir(currentDir)
+
+	envFilePath := filepath.Join(rootDir, ".env")
+	fmt.Println("Loading .env file from:", envFilePath)
+
+	if err := godotenv.Load(envFilePath); err != nil {
+		return nil, fmt.Errorf("error loading .env file from %s", envFilePath)
 	}
 
-	// Get server port
 	serverPortStr := os.Getenv("SERVER_PORT")
 	serverPort, err := strconv.Atoi(serverPortStr)
 	if err != nil || serverPort <= 0 {
-		return nil, errors.New("invalid SERVER_PORT in .env file")
+		return nil, fmt.Errorf("invalid SERVER_PORT in .env file")
 	}
 
-	// Get client port
 	clientPortStr := os.Getenv("CLIENT_PORT")
 	clientPort, err := strconv.Atoi(clientPortStr)
 	if err != nil || clientPort <= 0 {
-		return nil, errors.New("invalid CLIENT_PORT in .env file")
+		return nil, fmt.Errorf("invalid CLIENT_PORT in .env file")
 	}
 
 	return &AppConfig{
@@ -192,10 +205,10 @@ func ValidateAndNormalizeTag(input string) (string, error) {
 func GetSessionTokenFromCookie(req *http.Request) (string, error) {
 	cookie, err := req.Cookie("sessionToken")
 	if err == http.ErrNoCookie {
-		return "", nil // No cookie found, return empty string
+		return "", nil
 	} else if err != nil {
 		fmt.Println("Error : ", err)
-		return "", err // Some other error occurred
+		return "", err
 	}
 	return cookie.Value, nil
 }
