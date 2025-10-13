@@ -45,7 +45,6 @@ func LoadConfig() (*AppConfig, error) {
 	fmt.Println("Current working directory:", currentDir)
 
 	// Navigate to the root directory (i.e., go up two levels)
-	// rootDir := filepath.Dir(filepath.Dir(currentDir))
 	rootDir := filepath.Dir(currentDir)
 
 	envFilePath := filepath.Join(rootDir, ".env")
