@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of Digital Storytelling - APEX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #FF6B35;
+            --color-secondary: #004E89;
+            --color-accent: #1A1A1A;
+            --color-light: #FFFFFF;
+            --color-bg: #F8F9FA;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-accent);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--color-accent);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--color-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--color-accent);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .btn-nav {
+            padding: 0.625rem 1.5rem;
+            background: var(--color-secondary);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav:hover {
+            background: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Article Header */
+        .article-header {
+            margin-top: 80px;
+            padding: 4rem 2rem 2rem;
+            background: white;
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: var(--color-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+
+        .article-category {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            color: var(--color-accent);
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .article-subtitle {
+            font-size: 1.35rem;
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 2rem;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+        }
+
+        .author-details h4 {
+            font-weight: 700;
+            color: var(--color-accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .author-details p {
+            font-size: 0.875rem;
+            color: #999;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Featured Image */
+        .featured-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: block;
+        }
+
+        .featured-image.hidden {
+            display: none;
+        }
+
+        .no-image .article-body {
+            margin-top: 0;
+        }
+
+        /* Article Content */
+        .article-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+            background: white;
+        }
+
+        .article-body {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .article-body h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-accent);
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .article-body h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .article-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-body blockquote {
+            padding: 2rem;
+            margin: 2.5rem 0;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), rgba(0, 78, 137, 0.05));
+            border-left: 4px solid var(--color-primary);
+            border-radius: 8px;
+            font-size: 1.25rem;
+            font-style: italic;
+            color: var(--color-accent);
+        }
+
+        .article-body ul, .article-body ol {
+            margin: 1.5rem 0 1.5rem 2rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.75rem;
+        }
+
+        .article-body a {
+            color: var(--color-primary);
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .article-body a:hover {
+            color: var(--color-secondary);
+        }
+
+        .article-body img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 2rem 0;
+            display: block;
+        }
+
+        .article-body img[src=""],
+        .article-body img:not([src]) {
+            display: none;
+        }
+
+        /* Tags */
+        .article-tags {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin: 3rem 0;
+            padding: 2rem 0;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .tag {
+            padding: 0.5rem 1rem;
+            background: var(--color-bg);
+            color: var(--color-accent);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tag:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Social Share */
+        .share-section {
+            padding: 2rem;
+            background: var(--color-bg);
+            border-radius: 12px;
+            margin: 3rem 0;
+        }
+
+        .share-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .share-twitter {
+            background: #1DA1F2;
+            color: white;
+        }
+
+        .share-linkedin {
+            background: #0077B5;
+            color: white;
+        }
+
+        .share-facebook {
+            background: #1877F2;
+            color: white;
+        }
+
+        .share-copy {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        /* Author Bio */
+        .author-bio {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .author-bio-header {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .author-bio-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+            flex-shrink: 0;
+        }
+
+        .author-bio-info h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .author-bio-info p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .author-bio-description {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .author-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            padding: 0.625rem 1.25rem;
+            background: var(--color-bg);
+            color: var(--color-accent);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Comments Section */
+        .comments-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .comments-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--color-accent);
+        }
+
+        .comment-form {
+            margin-bottom: 3rem;
+        }
+
+        .comment-textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .comment-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+        }
+
+        .comment-submit {
+            margin-top: 1rem;
+            padding: 0.875rem 2rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comment-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .comment {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .comment-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .comment-author-name {
+            font-weight: 700;
+            color: var(--color-accent);
+        }
+
+        .comment-date {
+            font-size: 0.875rem;
+            color: #999;
+        }
+
+        .comment-text {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .comment-action {
+            font-size: 0.875rem;
+            color: #666;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .comment-action:hover {
+            color: var(--color-primary);
+        }
+
+        /* Related Posts */
+        .related-posts {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+            background: var(--color-bg);
+        }
+
+        .related-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-accent);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .related-title span {
+            color: var(--color-primary);
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .related-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .related-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .related-image-container {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        .related-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .related-card:hover .related-image {
+            transform: scale(1.08);
+        }
+
+        .related-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .related-content {
+            padding: 1.5rem;
+        }
+
+        .related-category {
+            display: inline-block;
+            padding: 0.375rem 1rem;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .related-card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .related-excerpt {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--color-accent);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .article-header {
+                padding: 3rem 1.5rem 1.5rem;
+            }
+
+            .article-content {
+                padding: 0 1.5rem 3rem;
+            }
+
+            .article-title {
+                font-size: 2rem;
+            }
+
+            .article-meta {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .post-stats {
+                gap: 1rem;
+            }
+
+            .share-buttons {
+                flex-direction: column;
+            }
+
+            .share-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .author-bio-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .author-social {
+                flex-direction: column;
+            }
+
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">APEX<span>.</span></a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="blog-listing.html">Stories</a>
+                <a href="#authors">Authors</a>
+                <a href="#about">About</a>
+                <a href="login.html" class="btn-nav">Sign In</a>
+            </div>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Article Header -->
+    <header class="article-header">
+        <div class="article-container">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <span>/</span>
+                <a href="blog-listing.html">Stories</a>
+                <span>/</span>
+                <span>Article</span>
+            </div>
+
+            <span class="article-category">Technology</span>
+            <h1 class="article-title">The Future of Digital Storytelling in an AI-Driven World</h1>
+            <p class="article-subtitle">Exploring how artificial intelligence is reshaping the way we create, consume, and connect through narratives in the digital age.</p>
+
+            <div class="article-meta">
+                <div class="author-info">
+                    <div class="author-avatar"></div>
+                    <div class="author-details">
+                        <h4>Sarah Mitchell</h4>
+                        <p>Published on October 15, 2025</p>
+                    </div>
+                </div>
+                <div class="post-stats">
+                    <div class="stat-item">
+                        <span>⏱</span>
+                        <span>8 min read</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>👁</span>
+                        <span>2.4k views</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Article Content -->
+    <article class="article-content">
+        <!-- Featured Image - Change src to your image URL or leave empty to hide -->
+        <img 
+            src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200" 
+            alt="Digital Storytelling Illustration" 
+            class="featured-image"
+            onerror="this.style.display='none'; this.parentElement.classList.add('no-image');"
+            onload="this.style.display='block';">
+
+        <div class="article-body">
+            <p>In an era where technology evolves at breakneck speed, the art of storytelling stands at a fascinating crossroads. Artificial intelligence has emerged not just as a tool, but as a collaborative partner in the creative process, fundamentally changing how stories are conceived, crafted, and consumed.</p>
+
+            <p>The intersection of AI and narrative creation presents both unprecedented opportunities and profound questions about the nature of creativity itself. As we venture deeper into this new frontier, we must ask ourselves: What does it mean to tell a story when machines can generate prose, predict audience preferences, and even craft emotional arcs?</p>
+
+            <h2>The Evolution of Creative Tools</h2>
+
+            <p>Throughout history, storytelling has evolved alongside our tools. From oral traditions to the printing press, from radio to television, and now to digital platforms powered by AI, each technological leap has transformed not just how we share stories, but what stories we can tell.</p>
+
+            <p>Modern AI systems can analyze millions of narratives, identifying patterns in plot structures, character development, and emotional resonance. They can suggest plot twists, generate dialogue, and even predict which stories will resonate with specific audiences. But this raises an important question: does efficiency in storytelling come at the cost of authenticity?</p>
+
+            <blockquote>
+                "The most powerful stories emerge from the intersection of human emotion and technological capability. Neither can replace the other; they must dance together."
+            </blockquote>
+
+            <h2>The Human Element in an AI World</h2>
+
+            <p>Despite AI's impressive capabilities, the human touch remains irreplaceable. Stories that truly move us carry the weight of lived experience, the nuance of human emotion, and the unpredictability of genuine creativity. AI can process data, but it cannot feel the ache of heartbreak or the joy of unexpected discovery.</p>
+
+            <p>The most successful storytellers of tomorrow will be those who leverage AI as a collaborator rather than viewing it as a replacement. They'll use machine learning to handle repetitive tasks, analyze audience data, and explore narrative possibilities, while reserving the core creative decisions for human judgment and intuition.</p>
+
+            <h3>Key Principles for AI-Enhanced Storytelling</h3>
+
+            <ul>
+                <li>Maintain authentic voice and perspective despite technological assistance</li>
+                <li>Use AI to augment creativity, not replace human insight</li>
+                <li>Balance data-driven decisions with intuitive creative choices</li>
+                <li>Preserve the emotional core that makes stories universally resonant</li>
+                <li>Embrace experimentation while honoring narrative fundamentals</li>
+            </ul>
+
+            <h2>The Democratization of Story Creation</h2>
+
+            <p>One of AI's most exciting contributions to storytelling is its potential to democratize creation. Tools that once required years of technical training are now accessible to anyone with a creative vision. Voice-to-text transcription, automated editing, and AI-assisted illustration are lowering barriers to entry across the creative landscape.</p>
+
+            <p>This democratization means we're hearing from voices previously excluded from traditional publishing and media channels. Stories from diverse perspectives, unique cultural backgrounds, and unconventional viewpoints are finding audiences in ways that weren't possible even a decade ago.</p>
+
+            <h2>Looking Ahead: The Next Chapter</h2>
+
+            <p>As we stand at this technological threshold, the future of storytelling appears both thrilling and uncertain. Interactive narratives that adapt to reader choices, personalized stories that evolve based on individual preferences, and collaborative tales created by humans and AI working in concert are all becoming reality.</p>
+
+            <p>The challenge for creators is to embrace these tools while maintaining what makes storytelling fundamentally human: empathy, vulnerability, and the courage to share our truths. Technology should amplify our voices, not replace them; enhance our creativity, not constrain it.</p>
+
+            <p>The stories that will define our age won't be those created entirely by humans or entirely by machines. They'll emerge from the creative tension between technological possibility and human insight, between data and intuition, between what algorithms can predict and what only the human heart can understand.</p>
+        </div>
+
+        <!-- Tags -->
+        <div class="article-tags">
+            <span class="tag">#ArtificialIntelligence</span>
+            <span class="tag">#Storytelling</span>
+            <span class="tag">#DigitalCreativity</span>
+            <span class="tag">#Technology</span>
+            <span class="tag">#ContentCreation</span>
+            <span class="tag">#FutureOfMedia</span>
+        </div>
+
+        <!-- Share Section -->
+        <div class="share-section">
+            <h3 class="share-title">Share this article</h3>
+            <div class="share-buttons">
+                <button class="share-btn share-twitter">
+                    <span>🐦</span>
+                    <span>Twitter</span>
+                </button>
+                <button class="share-btn share-linkedin">
+                    <span>💼</span>
+                    <span>LinkedIn</span>
+                </button>
+                <button class="share-btn share-facebook">
+                    <span>📘</span>
+                    <span>Facebook</span>
+                </button>
+                <button class="share-btn share-copy">
+                    <span>🔗</span>
+                    <span>Copy Link</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Author Bio -->
+        <div class="author-bio">
+            <div class="author-bio-header">
+                <div class="author-bio-avatar"></div>
+                <div class="author-bio-info">
+                    <h3>Sarah Mitchell</h3>
+                    <p>Technology Writer & Digital Storyteller</p>
+                </div>
+            </div>
+            <p class="author-bio-description">
+                Sarah Mitchell is an award-winning technology journalist with over 10 years of experience covering the intersection of creativity and innovation. Her work has appeared in major tech publications, and she's a frequent speaker at digital media conferences worldwide. When she's not writing, Sarah mentors aspiring creators and explores emerging storytelling technologies.
+            </p>
+            <div class="author-social">
+                <a href="#" class="social-link">Twitter</a>
+                <a href="#" class="social-link">LinkedIn</a>
+                <a href="#" class="social-link">Website</a>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <div class="comments-header">
+                <h3 class="comments-title">Comments (12)</h3>
+            </div>
+
+            <form class="comment-form">
+                <textarea class="comment-textarea" placeholder="Share your thoughts..."></textarea>
+                <button type="submit" class="comment-submit">Post Comment</button>
+            </form>
+
+            <div class="comments-list">
+                <div class="comment">
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <div class="comment-avatar"></div>
+                            <div>
+                                <div class="comment-author-name">Michael Chen</div>
+                                <div class="comment-date">2 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="comment-text">
+                        Fascinating perspective on AI and storytelling! I especially appreciate your point about maintaining the human element. The balance between efficiency and authenticity is something every creator should consider.
+                    </p>
+                    <div class="comment-actions">
+                        <button class="comment-action">👍 Like (24)</button>
+                        <button class="comment-action">Reply</button>
+                    </div>
+                </div>
+
+                <div class="comment">
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <div class="comment-avatar"></div>
+                            <div>
+                                <div class="comment-author-name">Emma Rodriguez</div>
+                                <div class="comment-date">5 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="comment-text">
+                        This article perfectly captures the current moment in digital creativity. As someone who uses AI tools daily, I can confirm that they're best used as collaborators, not replacements. Great insights!
+                    </p>
+                    <div class="comment-actions">
+                        <button class="comment-action">👍 Like (18)</button>
+                        <button class="comment-action">Reply</button>
+                    </div>
+                </div>
+
+                <div class="comment">
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <div class="comment-avatar"></div>
+                            <div>
+                                <div class="comment-author-name">David Park</div>
+                                <div class="comment-date">1 day ago</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="comment-text">
+                        The democratization aspect is what excites me most. AI tools are enabling creators from all backgrounds to share their stories. We're entering a golden age of diverse narratives!
+                    </p>
+                    <div class="comment-actions">
+                        <button class="comment-action">👍 Like (32)</button>
+                        <button class="comment-action">Reply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Related Posts -->
+    <section class="related-posts">
+        <h2 class="related-title">Related <span>Stories</span></h2>
+        <div class="related-grid">
+            <!-- Related Post 1 - With Image -->
+            <div class="related-card">
+                <div class="related-image-container">
+                    <img 
+                        src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800" 
+                        alt="AI and Creativity"
+                        class="related-image"
+                        onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'related-image-placeholder\'>AI</div>';">
+                </div>
+                <div class="related-content">
+                    <span class="related-category">AI & Tech</span>
+                    <h3 class="related-card-title">How AI is Transforming Creative Industries</h3>
+                    <p class="related-excerpt">From music to visual arts, artificial intelligence is opening new frontiers for creative expression and collaboration.</p>
+                </div>
+            </div>
+
+            <!-- Related Post 2 - With Image -->
+            <div class="related-card">
+                <div class="related-image-container">
+                    <img 
+                        src="https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=800" 
+                        alt="Writing and Technology"
+                        class="related-image"
+                        onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'related-image-placeholder\'>✍️</div>';">
+                </div>
+                <div class="related-content">
+                    <span class="related-category">Writing</span>
+                    <h3 class="related-card-title">The Art of Digital Writing: Best Practices for 2025</h3>
+                    <p class="related-excerpt">Master the essential skills every modern writer needs to engage audiences in the digital landscape.</p>
+                </div>
+            </div>
+
+            <!-- Related Post 3 - No Image (will show placeholder) -->
+            <div class="related-card">
+                <div class="related-image-container">
+                    <img 
+                        src="" 
+                        alt="Content Strategy"
+                        class="related-image"
+                        onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'related-image-placeholder\'>📱</div>';">
+                </div>
+                <div class="related-content">
+                    <span class="related-category">Strategy</span>
+                    <h3 class="related-card-title">Building a Content Strategy in the Age of AI</h3>
+                    <p class="related-excerpt">Learn how to create compelling content strategies that leverage AI while maintaining authentic human connection.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Handle comment form submission
+        document.querySelector('.comment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const textarea = this.querySelector('.comment-textarea');
+            if (textarea.value.trim()) {
+                alert('Comment posted! (This is a demo)');
+                textarea.value = '';
+            }
+        });
+
+        // Handle share buttons
+        document.querySelectorAll('.share-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const platform = this.classList.contains('share-twitter') ? 'Twitter' :
+                               this.classList.contains('share-linkedin') ? 'LinkedIn' :
+                               this.classList.contains('share-facebook') ? 'Facebook' : 'Clipboard';
+                
+                if (platform === 'Clipboard') {
+                    navigator.clipboard.writeText(window.location.href);
+                    alert('Link copied to clipboard!');
+                } else {
+                    alert(`Share on ${platform} (This is a demo)`);
+                }
+            });
+        });
+
+        // Handle tag clicks
+        document.querySelectorAll('.tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                alert(`Filter by ${this.textContent} (This is a demo)`);
+            });
+        });
+
+        // Initialize related post images with placeholders
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.related-image').forEach(img => {
+                if (!img.src || img.src === window.location.href) {
+                    img.style.display = 'none';
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'related-image-placeholder';
+                    placeholder.textContent = '📝';
+                    img.parentElement.appendChild(placeholder);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
