@@ -30,10 +30,10 @@ func DefaultRoute(ctx *gin.Context) {
 
 func RenderInitPage(ctx *gin.Context) {
     ctx.Header("Content-Type", "text/html")
-    RenderAuthPage(ctx)
+    RenderLoginPage(ctx)
 }
 
-func RenderAuthPage(ctx *gin.Context) {
+func RenderLoginPage(ctx *gin.Context) {
     currentDir, err := os.Getwd()
     if err != nil {
         log.Println("Error getting current directory:", err)
@@ -44,10 +44,10 @@ func RenderAuthPage(ctx *gin.Context) {
     // Navigate to the root directory (going up two levels))
 	rootDir := filepath.Dir(currentDir)
 
-    // Build the relative path to the 'auth.html' file
-    authFilePath := filepath.Join(rootDir, "client", "templates", "auth.html")
+    // Build the relative path to the 'login.html' file
+    loginFilePath := filepath.Join(rootDir, "client", "templates", "login.html")
 
-    tmpl := template.Must(template.ParseFiles(authFilePath))
+    tmpl := template.Must(template.ParseFiles(loginFilePath))
     if tmpl == nil {
         log.Println("Error: Template loading failed")
         ctx.String(http.StatusInternalServerError, "Error loading template")
@@ -56,7 +56,7 @@ func RenderAuthPage(ctx *gin.Context) {
 
     err = tmpl.Execute(ctx.Writer, "message")
     if err != nil {
-        log.Println("Error in tmpl.Execute() in RenderAuthPage:", err)
+        log.Println("Error in tmpl.Execute() in RenderLoginPage:", err)
         fmt.Fprint(ctx.Writer, err)
     }
 }

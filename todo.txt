@@ -1,0 +1,2 @@
+Run server on EC2
+integrate docker if time permits
