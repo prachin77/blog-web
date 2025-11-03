@@ -3,15 +3,17 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prachin77/blog-web/client/client_handlers"
+	"github.com/prachin77/blog-web/middleware"
 	"github.com/prachin77/blog-web/pb"
 	"github.com/prachin77/blog-web/utils"
-	"github.com/prachin77/blog-web/middleware"
 )
 
 func main() {
@@ -48,7 +50,9 @@ func main() {
 
 	// Apply middlewares
 	r.Use(middleware.CORSMiddleware()) 
-
+	cwd, _ := os.Getwd()
+	rootDir := filepath.Dir(cwd)
+	r.Static("./client/static", filepath.Join(rootDir, "client", "static"))
 	// Routes
 	r.GET("/", client_handlers.DefaultRoute)
 	r.GET("/blogger", client_handlers.RenderInitPage)
