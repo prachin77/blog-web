@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In to APEX | Welcome Back</title>    
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js" 
-            integrity="sha384-ZBXiYtYQ6hJ2Y0ZNoYuI+Nq5MqWBr+chMrS/RkXpNzQCApHEhOt2aY8EJgqwHLkJ" 
-            crossorigin="anonymous"
-    ></script>
-</head>
-<body>
+
+<div id="main-login-body"> 
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign In to APEX | Welcome Back</title>    
+        <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js" 
+                integrity="sha384-ZBXiYtYQ6hJ2Y0ZNoYuI+Nq5MqWBr+chMrS/RkXpNzQCApHEhOt2aY8EJgqwHLkJ" 
+                crossorigin="anonymous"
+        ></script>
+    </head>
+
     <div class="bg-pattern"></div>
     <div class="floating-shape shape-1"></div>
     <div class="floating-shape shape-2"></div>
@@ -22,7 +23,12 @@
         </div>
 
         <div class="signin-body">
-            <form id="signinForm">
+            <form id="signinForm"
+                  hx-post="/auth/login"
+                  hx-ext="json-enc"
+                  hx-target="#main-login-body"
+                  hx-swap="outerHTML"
+            >
                 <div class="input-group">
                     <label for="email">Email Address</label>
                     <input 
@@ -82,12 +88,14 @@
 
             <div class="signup-link">
                 <span style="color: #666;">Don't have an account? </span>
-                <a href="signup.html">Create one now</a>
+                <a hx-get="/signup"
+                   hx-target="#main-login-body"
+                   hx-swap="outerHTML"
+                   hx-push-url="/signup"
+                >Create one now</a>
             </div>
         </div>
     </div>
 
     <script src="/client/static/js/login.js"></script>
-
-</body>
-</html>
+</div>

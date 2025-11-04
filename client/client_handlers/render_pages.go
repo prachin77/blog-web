@@ -60,3 +60,31 @@ func RenderLoginPage(ctx *gin.Context) {
         fmt.Fprint(ctx.Writer, err)
     }
 }
+
+func RenderSignupPage(ctx *gin.Context) {
+    currentDir, err := os.Getwd()
+    if err != nil {
+        log.Println("Error getting current directory:", err)
+        ctx.String(http.StatusInternalServerError, "Error getting current directory")
+        return
+    }
+
+    // Navigate to the root directory (going up two levels))
+    rootDir := filepath.Dir(currentDir)
+
+    // Build the relative path to the 'signup.html' file
+    signupFilePath := filepath.Join(rootDir, "client", "templates", "signup.html")
+
+    tmpl := template.Must(template.ParseFiles(signupFilePath))
+    if tmpl == nil {
+        log.Println("Error: Template loading failed")
+        ctx.String(http.StatusInternalServerError, "Error loading template")
+        return
+    }
+
+    err = tmpl.Execute(ctx.Writer, "message")
+    if err != nil {
+        log.Println("Error in tmpl.Execute() in RenderSignupPage:", err)
+        fmt.Fprint(ctx.Writer, err)
+    }
+}

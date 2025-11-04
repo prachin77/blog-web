@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 
-<head>
-    <title>Join APEX | Start Your Story</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/client/static/css/signup.css">
-</head>
-<body>
+<div id="main-signup-body">
+    <head>
+        <title>Join APEX | Start Your Story</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="/client/static/css/signup.css">
+    </head>
+
     <div class="bg-pattern"></div>
     <div class="floating-shape shape-1"></div>
     <div class="floating-shape shape-2"></div>
@@ -20,13 +21,18 @@
         <div class="signup-body">
             <form id="signupForm">
                 <div class="input-group">
-                    <label for="username">username</label>
+                    <label for="username">Username</label>
                     <input 
                         type="text" 
                         id="username"
                         class="input-field"
-                        placeholder=  
-   `                 <label for="email">Email Address</label>
+                        placeholder="Choose a username"
+                        required
+                    />
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email Address</label>
                     <input 
                         type="email" 
                         id="email"
@@ -50,7 +56,9 @@
                 <button type="submit" class="btn-signup">Create Your Account</button>
 
                 <p class="terms-text">
-                    By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    By signing up, you agree to our 
+                    <a href="#">Terms of Service</a> and 
+                    <a href="#">Privacy Policy</a>
                 </p>
             </form>
 
@@ -86,5 +94,4 @@
     </div>
 
     <script src="/client/static/js/signup.js"></script>
-</body>
-</html>
+</div>

@@ -56,7 +56,8 @@ func main() {
 	// Routes
 	r.GET("/", client_handlers.DefaultRoute)
 	r.GET("/blogger", client_handlers.RenderInitPage)
-	// r.GET("/auth", client_handlers.RenderAuthPage)
+	r.GET("/login", client_handlers.RenderLoginPage)
+	r.GET("/signup", client_handlers.RenderSignupPage)
 
 	// Auth form submission routes (HTMX targets)
 	r.POST("/auth/register", client_handlers.Register)
